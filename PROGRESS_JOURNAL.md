@@ -72,6 +72,35 @@
 
 ## Session Log
 
+### December 12, 2025 - Skills Sync & Project Cleanup (Session 2)
+
+**Duration:** ~30 min
+**Project:** professional-development, multi-agent-workflow
+**Outcome:** ✅ Claude Code CLI now has all custom skills
+
+**What Happened:**
+1. Reviewed project knowledge files - trimmed from 10 to 5 essential:
+   - Keep: ETHOS.md, ACTIVE_PROJECTS.md, PROGRESS_JOURNAL.md, TOOLS_INVENTORY.md, README.md
+   - Remove from Project: LEARNINGS.md (duplicates multi-agent-workflow/learnings/), GIT_CHEATSHEET.md, RESOURCES.md, MacBook setup files
+2. Decided against "read this project" skill - hub-and-spoke pattern already handles it
+3. Reviewed Claude Skills guide from trusted developer - good reference, mostly overkill for current needs
+4. Installed/updated gh CLI via brew
+5. Created professional-development repo on GitHub and pushed
+6. Synced all custom skills to `~/.claude/skills/` for Claude Code CLI:
+   - capture-learnings, progress-journal
+   - phase1-planning through phase6-iteration
+   - workflow-state
+
+**Key Insight:**
+Meta-skills layer (skill-debugging-assistant, skill-gap-analyzer, etc.) is "factory building factories" trap. With only 2-10 skills, don't need skills to analyze skills.
+
+**Patterns Confirmed:**
+- Hub-and-spoke: Opus (planning/capture) + Sonnet agents (implementation) - no need for agents to read full context
+- Skills belong in `~/.claude/skills/` for Claude Code CLI auto-discovery
+- Public Anthropic skills (docx, pdf, etc.) are baked in, not copyable files
+
+---
+
 ### December 12, 2025 - Skills & Knowledge Infrastructure
 
 **Duration:** ~2 hours
