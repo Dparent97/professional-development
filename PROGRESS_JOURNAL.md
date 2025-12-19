@@ -59,6 +59,7 @@
 - ✅ Documents decisions (this project exists because of this habit)
 - ✅ Tests on real device, not just simulator
 - ✅ Keeps Claude Project context updated
+- ✅ Reviews actual source documents (paper forms, Excel files) before modeling data
 
 ### Bad Habits
 
@@ -71,6 +72,115 @@
 ---
 
 ## Session Log
+
+### December 18, 2025 - Oil Record Book Tool: Full Form Design + OCR Prep
+
+**Duration:** ~2 hours
+**Project:** oil_record_book_tool
+**Outcome:** ✅ Comprehensive data model + Cursor prompt ready
+
+**What Happened:**
+1. Reviewed oil_record_book_tool codebase - verified 22 tests passing, identified stale README and deprecation warnings
+2. Analyzed actual End of Hitch Sounding Form (uploaded HEIC photo):
+   - Header: Vessel, Date, Location, Charter, Draft Fwd/Aft, Fuel on Log, Correction
+   - 12 fuel tanks (#7, #9, #11, #13, #14, #18 × port/stbd) with soundings + gallons
+   - Service oils (#15P/S, #16P/S) - gallons only
+   - Slop tanks (#17P Oily Bilge, #17S Dirty Oil) - soundings + gallons
+   - Engineer signature
+3. Designed expanded data model:
+   - New `FuelTankSounding` table for repeating fuel tank rows
+   - Expanded `HitchRecord` with all form fields
+4. Created comprehensive Cursor prompt (1400+ lines) with:
+   - Model changes, OCR service using Google Cloud Vision
+   - API endpoints for parse-image, hitch CRUD
+   - Full form UI with camera capture and OCR auto-fill
+5. Discovered Claude.ai sandbox blocks external API calls - OCR must test locally
+6. Moved prompt to `docs/cursor_prompt_full_hitch_form.md` for agent access
+7. Cursor executed the prompt - implemented full feature set
+
+**Key Wins:**
+- Data model now matches actual paper form exactly
+- OCR service ready (pending local testing)
+- Comprehensive Cursor prompt documented the implementation spec
+- Learnings captured to central repo
+
+**Technical Decisions:**
+- Google Cloud Vision over Anthropic for OCR (existing credentials from receipt-analysis project)
+- Separate `FuelTankSounding` table vs 30+ columns on HitchRecord
+- `parseInt()` vs `parseFloat()` - must match backend column types
+
+**Lessons Learned:**
+- Claude.ai sandbox has network restrictions - can't call external APIs (test locally)
+- Paper forms with repeating sections → normalize into child tables
+- Division of labor: Cursor captures implementation bugs, Claude synthesizes cross-session patterns
+
+**Learnings Captured:**
+- BY_TOOL/google-cloud-vision.md - sandbox limits, credentials, table OCR parsing
+- BY_TOOL/image-processing.md - HEIC to JPEG on Linux
+- UNIVERSAL_PATTERNS.md - #15 Model forms with related tables, #6 type mismatch at boundaries
+
+**Next Steps:**
+- Test OCR locally with actual form photo
+- Verify `parseFloat` for slop tank gallons (Cursor may have used parseInt)
+- Run existing tests to confirm model changes didn't break anything
+- Manual test new_hitch page flow
+
+---
+
+### December 12, 2025 - Oil Record Book Tool MVP (Session 3)
+
+**Duration:** ~4 hours
+**Project:** oil_record_book_tool, professional-development
+**Outcome:** ✅ Working MVP with 22 tests passing
+
+**What Happened:**
+1. Created TECHNIQUES.md - extracted actionable tips from Rate Limited podcast & Claude Skills guide
+2. Created TRANSITION_PLAN.md - full career transition roadmap with target roles, timeline, skills gaps
+3. Set up oil_record_book_tool project from scratch:
+   - Flask app structure with SQLAlchemy models
+   - Extracted sounding tables from Excel (Tank 17P/17S)
+   - CLAUDE.md with project context for agents
+   - WORKFLOW_STATE.json for multi-agent tracking
+4. Implemented weekly slop tank soundings feature:
+   - Feet/inches input → automatic gallon/m³ lookup
+   - Generates MARPOL-compliant ORB Code C & I entries
+   - Copy-to-clipboard for ORB text
+5. Implemented daily fuel tickets feature:
+   - Service tank selector (#7, #9, #11, #13, #14, #18 P/S)
+   - Meter readings with auto-consumption calculation
+   - Stats tracking (today/avg/total)
+6. Built dashboard with tank level visualizations
+7. Built history view with tabbed soundings/ORB entries
+
+**Key Decisions:**
+- Single agent for fuel tickets (feature too cohesive to parallelize)
+- Revised connectivity constraint: "Handle temporary drops" vs offline-first (simpler architecture)
+- Dark theme with amber accents (engine room friendly)
+- Skip Phase 2 framework generation (planning doc already exists)
+
+**Technical Stack:**
+- Python/Flask, SQLAlchemy, SQLite
+- Mobile-first responsive CSS
+- REST API with JSON responses
+- 22 tests (8 sounding service, 14 fuel service)
+
+**Portfolio Value:**
+This is the "Oil Record Book Assistant" mentioned in TRANSITION_PLAN.md - high-impact domain project proving:
+- Real problem from real domain experience
+- Production mindset (error handling, validation)
+- Constraint awareness (two-crew rotation, mobile-first)
+
+**Lessons Learned:**
+- Multi-agent workflow best for greenfield/parallel work, overkill for cohesive features
+- Planning docs (like ORB_App_Planning_Document.md) can replace Phase 1-2 formality
+- Feature priority should follow user value: daily ops → formal baseline → handover package
+
+**Next Steps:**
+- End of Hitch import (formal baseline, enables delta tracking)
+- Handover package generation (Excel/PDF for Gold crew)
+- Execute TRANSITION_PLAN Phase 1 quick wins
+
+---
 
 ### December 12, 2025 - Skills Sync & Project Cleanup (Session 2)
 
@@ -186,6 +296,7 @@ Meta-skills layer (skill-debugging-assistant, skill-gap-analyzer, etc.) is "fact
 | Mock mode first | Proves pipeline before adding API complexity |
 | Hub-and-spoke (Opus + Sonnet agents) | Planning in one place, execution in parallel |
 | Belt-and-suspenders redundancy | Capture learnings during session AND via skill |
+| Reviewing source documents | Actual paper form > assumed requirements |
 
 ### What Doesn't Work
 
@@ -197,6 +308,7 @@ Meta-skills layer (skill-debugging-assistant, skill-gap-analyzer, etc.) is "fact
 | HTTPS git auth | Flaky on Mac, SSH more reliable |
 | Trusting merged code compiles = works | Runtime issues common post-merge |
 | Empty templates waiting to be filled | They stay empty; real content beats scaffolding |
+| Testing external APIs in Claude.ai sandbox | Network blocked - test locally |
 
 ### Recurring Patterns to Watch
 
@@ -209,6 +321,8 @@ Meta-skills layer (skill-debugging-assistant, skill-gap-analyzer, etc.) is "fact
 4. **Stale Branch Accumulation** - Delete branches immediately after merge. Don't let them pile up.
 
 5. **SSH vs HTTPS** - All repos should use SSH. Check `git remote -v` before pushing.
+
+6. **JS/Python Type Boundary** - `parseInt` vs `parseFloat` must match backend column types (Integer vs Float).
 
 ---
 
@@ -225,12 +339,14 @@ Meta-skills layer (skill-debugging-assistant, skill-gap-analyzer, etc.) is "fact
 | DevOps | ⭐⭐ | Railway deployment, local backend |
 | AI APIs | ⭐⭐ | Gemini integration, mock patterns |
 | Claude Skills | ⭐⭐ | Built capture-learnings, progress-journal |
+| OCR/Vision APIs | ⭐ | Google Cloud Vision setup, needs testing |
 
 ### Projects Shipped
 
 | Project | Status | Users |
 |---------|--------|-------|
 | ship-MTA-draft | ✅ Production | Real crew |
+| oil_record_book_tool | 🔄 In Progress | Self (testing this hitch) |
 | Reality-layer | ✅ Demo-ready | Self |
 | multi-agent-workflow | ✅ v2.0.0 | Self |
 | professional-development | ✅ Active | Self |
@@ -249,6 +365,7 @@ Meta-skills layer (skill-debugging-assistant, skill-gap-analyzer, etc.) is "fact
 - Commit after each logical chunk, not at the end
 - Test on device early and often (don't trust simulator for AR/networking)
 - When agents generate code, budget time for integration fixes
+- Review actual source documents (forms, specs) before modeling data
 
 ### After Session
 - Delete merged branches immediately
@@ -274,7 +391,9 @@ Meta-skills layer (skill-debugging-assistant, skill-gap-analyzer, etc.) is "fact
 
 > "Mixing both = some redundancy is good" - Belt and suspenders beats missing something.
 
+> "Cursor does implementation bugs, Claude synthesizes cross-session patterns."
+
 ---
 
-*Last updated: December 12, 2025*
+*Last updated: December 18, 2025*
 *Update after each significant session*
