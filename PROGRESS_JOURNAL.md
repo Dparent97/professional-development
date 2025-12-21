@@ -73,6 +73,86 @@
 
 ## Session Log
 
+### December 20, 2025 - Crew Shopping List: Phase 3-4 Complete + Framework Standardization
+
+**Duration:** ~3 hours
+**Project:** crew-shopping-list, oil_record_book_tool, multi-agent-workflow
+**Outcome:** ✅ 4-agent iteration complete, framework standardized across projects
+
+**What Happened:**
+1. Completed Phase 3 codex review for crew-shopping-list:
+   - Identified 4 improvements: data model/export, price tracking, stock status, templates/history
+   - Generated 4 agent prompts + coordinator instructions
+2. Agents executed in Cursor (parallel windows):
+   - Agent 1: Data model + PDF/Word export
+   - Agent 2: Price tracking UI + running totals
+   - Agent 3: Stock status modal + badges
+   - Agent 4: Templates + History pages + bottom nav
+3. All 4 PRs merged successfully, no blocking issues
+4. Standardized project infrastructure:
+   - Discovered existing `bin/init-project` script in multi-agent-workflow
+   - Ran it on crew-shopping-list and oil_record_book_tool
+   - Both now have full `workflow/` directory with phases, templates, learnings, scripts
+5. Created COORDINATOR.md for Phase 4 agents
+6. Clarified hub-and-spoke roles:
+   - Opus (this chat): Phase 3 review, generate prompts, capture learnings
+   - Cursor coordinator: Phase 4 launch, monitor, merge, test
+   - Cursor agents: Execute specific prompts, create PRs
+7. Brainstormed crew shopping list vision with user context:
+   - Real problem: Cook (Juan) shops from frozen 2019 baseline
+   - Budget blowout on wrong items, crew requests ignored
+   - App potential: Budget-aware, crew-driven inventory correction system
+
+**Key Wins:**
+- All 4 agents delivered working code
+- Framework now portable via `bin/init-project --copy`
+- Clear separation of Opus hub vs Cursor coordinator roles
+- Deep user research unlocked real product vision
+
+**Technical Decisions:**
+- `workflow/` copied into each project (not symlinked) for portability
+- Coordinator reads `workflow/phases/phase4-agent-launcher.md` for instructions
+- Agents don't need framework knowledge - just their specific prompt
+
+**Standard Project Structure (going forward):**
+```
+project/
+├── WORKFLOW_STATE.json
+├── WORKFLOW.md
+├── PROJECT_LEARNINGS.md
+├── CLAUDE.md
+├── AGENT_PROMPTS/
+│   ├── COORDINATOR.md
+│   └── [agent prompts from Phase 3]
+└── workflow/
+    ├── core/workflow_state.py
+    ├── phases/
+    ├── templates/
+    ├── scripts/
+    └── learnings/
+```
+
+**Product Insights (Crew Shopping List):**
+- Competition isn't other apps - it's yelling across the mess
+- Juan's frozen baseline = crew who existed 6 years ago
+- Budget visibility prevents "sorry no money left" week 2
+- Paste-a-link to add items (crew doesn't know product names)
+- Store-specific lists prevent Safeway overspend vs Costco bulk
+- Live "got it" updates = dopamine hit, crew feels heard
+
+**Features Prioritized:**
+- This week: Budget tracking, store-specific lists, categories on export, live status updates
+- Next iteration: Paste-a-link adding, personal favorites, substitution prefs
+- Future: LLM recipe suggestions, smart baseline learning
+
+**Lessons Learned:**
+- `bin/init-project` already existed - RTFM before building new tooling
+- Agents don't need framework context - just specific prompts
+- Real user research (Juan story) > feature brainstorming in vacuum
+- "Offline-first" is overengineering when connectivity is "pretty good"
+
+---
+
 ### December 18, 2025 - Oil Record Book Tool: Full Form Design + OCR Prep
 
 **Duration:** ~2 hours
