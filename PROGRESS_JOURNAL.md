@@ -73,6 +73,65 @@
 
 ## Session Log
 
+### December 21, 2025 - Crew Shopping List: Iteration 3 Complete + Paste-a-Link Started
+
+**Duration:** ~4 hours
+**Project:** crew-shopping-list
+**Outcome:** ✅ All iteration 3 features shipped, paste-a-link 80% complete
+
+**What Happened:**
+1. Completed Phase 4 agent execution (4 agents):
+   - Agent 1: Budget & categories backend (model fields, migrations)
+   - Agent 2: Budget bar UI, store selector, active nav
+   - Agent 3: Live polling, toast notifications, late badges
+   - Agent 4: Category-grouped PDF/DOCX export
+2. Phase 5 integration (hub as Agent 4 when Cursor hit limits):
+   - Merged 4 PRs with conflict resolution
+   - Fixed duplicate function bug in shop.js (both Agent 2 and 3 added updateBudgetDisplay)
+   - Ran migrations, categorized 63 products
+3. Manual testing revealed:
+   - Images not showing → test data had placeholders, production DB has real URLs
+   - Cook view broken → duplicate JS functions from merge
+   - No delete button → added quick fix
+4. Started paste-a-link feature:
+   - POST /api/products/from-url extracts OG meta tags
+   - Fallback chain: OG → Twitter cards → title tag → URL path parsing
+   - Frontend: URL input in new product modal
+   - Auto-detects store from URL domain
+
+**Key Wins:**
+- 8 features shipped in one iteration (budget, store, categories, late flags, polling, toasts, nav, export)
+- Hub (Opus) seamlessly took over when Cursor agents exhausted
+- Real cook can now see the shopping list (bug fixed within minutes of report)
+
+**Bugs Hit:**
+- Duplicate function definitions in JS don't error - they silently overwrite. Merge kept both copies.
+- Test config uses in-memory DB with placeholder data. Production uses real DB with Cloudinary URLs.
+
+**Lessons Learned:**
+- Post-merge integration testing must actually load every page, not just verify app starts
+- When multiple agents touch same file, explicitly assign function ownership in prompts
+- OG meta tags are reliable across major e-commerce sites (Costco, Walmart, Amazon)
+- URL path parsing is a good fallback when sites block scraping
+
+**Features Shipped:**
+- ✅ Budget tracking with color-coded progress bar
+- ✅ Target store selection (Costco/Walmart/Safeway/Multi)
+- ✅ Product categories (9 types)
+- ✅ Late addition badges (items added while shopping)
+- ✅ Live polling with toast notifications
+- ✅ Toast system replacing all alerts
+- ✅ Active nav state
+- ✅ Category-grouped exports (PDF/DOCX)
+- ✅ Delete button on items
+
+**Paste-a-Link (in progress):**
+- Backend complete: /api/products/from-url
+- Frontend complete: URL input, Fetch button, auto-fill form
+- Needs: Testing on real URLs, handle partial responses, clear remoteUrl on file select
+
+---
+
 ### December 20, 2025 - Crew Shopping List: Phase 3-4 Complete + Framework Standardization
 
 **Duration:** ~3 hours
