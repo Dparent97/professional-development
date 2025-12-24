@@ -73,6 +73,67 @@
 
 ## Session Log
 
+### December 23, 2025 - Crew Shopping List: Standard Inventory Feature + Image Pipeline
+
+**Duration:** ~3 hours
+**Project:** crew-shopping-list
+**Outcome:** ✅ Feature spec complete, image generation pipeline ready
+
+**What Happened:**
+1. Fixed URL extraction for Home Depot, Lowes, Grainger (detect error pages, handle numeric IDs in URLs)
+2. Analyzed cook's Excel inventory (635 items across groceries + cleaning)
+3. Designed Standard Inventory feature: par levels, inventory count mode, auto-generate shopping list
+4. Created Cursor prompt for inventory system build (Opus building it now)
+5. Built image generation pipeline: tested web scraping (failed - Gemini hallucinated URLs), pivoted to AI generation
+6. Created scripts for OpenAI and Google Imagen 3 batch image generation
+
+**Key Wins:**
+- Cook's workflow stays the same (count inventory → generate list), but data becomes crew-sourced over time
+- 635 items cleaned and ready with image prompts
+- Imagen 3 script ready to generate all product images (~$3 for 635 images)
+
+**Lessons Learned:**
+- Web scraping for images unreliable - AI hallucinated 44/50 URLs from Wikimedia
+- AI-generated images more consistent: same style, no licensing issues, white backgrounds
+- Design for workflow adoption: match existing patterns (cook's print-and-count habit) with better data
+
+**Insight:**
+> "If his items aren't there day one, he won't adopt." - Seed with real user data, not theoretical products.
+
+---
+
+### December 22, 2025 - Crew Shopping List: Design System Overhaul + Testing
+
+**Duration:** ~6 hours
+**Project:** crew-shopping-list
+**Outcome:** ✅ Complete design system, all 52 tests passing
+
+**What Happened:**
+1. Implemented 3-phase design system from Gemini's DESIGN_PROPOSAL.md:
+   - Phase 1: True black backgrounds, iOS typography, glassmorphism nav
+   - Phase 2: Component polish (modals, lists, search)
+   - Phase 3: Micro-interactions, loading states, empty states
+2. Fixed post-design bugs: budget modal visibility, template/history list separation
+3. Ran comprehensive testing: 48/52 automated, 4 manual (Cloudinary, URL extraction, budget modal, animations)
+4. All 52 tests passed
+
+**Key Wins:**
+- iOS-inspired dark mode looks professional
+- Budget modal fix: `.modal form` → `.modal > form` (direct children only)
+- Glassmorphism blur effects smooth on mobile
+
+**Bugs Hit:**
+- CSS selector `.modal form` applied to nested forms, causing layout collapse
+- Template/history items ran together (needed card separation)
+- Duplicate CSS blocks (3x `.budget-modal-content`) from AI implementation
+
+**Lessons Learned:**
+- CSS selector specificity matters with nested elements - use child selector when needed
+- AI design implementation creates duplicates - review for cleanup post-implementation
+- Test each phase before proceeding to catch issues early
+
+---
+
 ### December 21, 2025 - Crew Shopping List: Iteration 3 Complete + Paste-a-Link Started
 
 **Duration:** ~4 hours
@@ -532,7 +593,9 @@ Meta-skills layer (skill-debugging-assistant, skill-gap-analyzer, etc.) is "fact
 
 > "Cursor does implementation bugs, Claude synthesizes cross-session patterns."
 
+> "If his items aren't there day one, he won't adopt." - Seed with real user data.
+
 ---
 
-*Last updated: December 18, 2025*
+*Last updated: December 23, 2025*
 *Update after each significant session*
